@@ -8,7 +8,7 @@ public class Kingdom {
 	private int countriesOwned; // Countries currently under control of the Kingdom
 	private int capital; // Money left on the Kingdom
 	private int army; // Current Soldiers on the Kingdom
-	
+
 	public Kingdom(String king, ArrayList<String> princes, int countriesConquered, int capital, int army) {
 		this.king = king;
 		this.princes = princes;
@@ -16,7 +16,7 @@ public class Kingdom {
 		this.capital = capital;
 		this.army = army;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Kingdom) {
@@ -26,19 +26,21 @@ public class Kingdom {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Exercise 1: The Kingdom wants to expand across the land. Nearby Kingdoms are selling some nearby lands and they plan
 	 * to buy as much as possible. Complete the maxExpansion() method below. You must use loops to solve this exercise.
 	 * @param The cost of the countries that are going to be purchased.
 	 * @return The amount of countries that the Kingdom bought
 	 */
-	
+
 	public int maxExpansion(int costOfCountry) {
-		// 	YOUR CODE HERE
-		return 0; // Dummy Return
+		int countriesBought = this.getCapital() / costOfCountry;
+		this.setCountriesOwned(this.getCountriesOwned() + countriesBought);
+		this.setCapital(this.getCapital() - (countriesBought * costOfCountry));
+		return countriesBought; 
 	}
-	
+
 	/**
 	 * Exercise 2: One of the nearby Kingdoms took over one of the recent bought lands. Help the king decide whether they must go to war or not by 
 	 * completing the goToWar() method below.
@@ -47,12 +49,19 @@ public class Kingdom {
 	 * @param The enemy this Kingdom is facing
 	 * @return True if they must go to war, false if they must not go.
 	 */
-	
+
 	public boolean goToWar(Kingdom enemy) {
-		// YOUR CODE HERE
-		return false; // Dummy return
+		if(this.getArmy() > enemy.getArmy())
+			return true;
+		else if(this.getArmy() * 1.5 < enemy.getArmy())
+			return false;
+		else {
+			if(this.getPrinces().size() > enemy.getPrinces().size())
+				return true;
+			return false;
+		}
 	}
-	
+
 	/**
 	 * Exercise 3: The king has passed away after the war and now one of the princes must take the throne. He left some names, for different positions, 
 	 * on his will. If no valid names are found, return the first prince of the kingdom. Complete the newKing() method below to see who the new king will be.
@@ -60,10 +69,13 @@ public class Kingdom {
 	 * @param The names left behind by the king
 	 * @return The new ruler of the Kingdom
 	 */
-	
+
 	public String newKing(ArrayList<String> names) {
-		// YOUR CODE HERE
-		return null; // Dummy return
+		for(int i = 0; i < names.size(); i++) {
+			for(int j = 0; j < this.getPrinces().size(); j++)
+				if (names.get(i).equals(this.getPrinces().get(j))) return names.get(i);
+		}
+		return this.getPrinces().get(0); 
 	}
 
 	/**
@@ -73,12 +85,17 @@ public class Kingdom {
 	 * @param The plate to be fixed.
 	 * @return A new plate with the fixed letters
 	 */
-	
+
 	public String fixLetters(String damagedPlate) {
-		// YOUR CODE HERE
-		return null; // Dummy return
+		String newPlate = "";
+		for(int i = 0; i < damagedPlate.length(); i++) {
+			if(damagedPlate.charAt(i) != this.getKing().charAt(i)) 
+				newPlate += this.getKing().charAt(i);
+			else newPlate += damagedPlate.charAt(i);
+		}
+		return newPlate; // Dummy return
 	}
-		
+
 	/**
 	 * Exercise 5: Recently, rumors about the appearance of new princes spread across the Kingdom. The rumors were accompanied by a document which
 	 * contained the supposedly new princes. Now, the king wants to spread a new document which contains the names of those fake princes to properly 
@@ -88,10 +105,27 @@ public class Kingdom {
 	 * @param The fake document that has been spread out.
 	 * @return A new document with the fake princes names.
 	 */
-	
+
 	public String[] spreadFakePrinces(ArrayList<String> fakeDocument) {
-		// YOUR CODE HERE
-		return null; // Dummy return
+		boolean[] contains = new boolean[fakeDocument.size()];
+		for(int j = 0; j < fakeDocument.size(); j++) {
+			for(int i = 0; i < this.getPrinces().size(); i++) {
+				if (this.getPrinces().get(i).equals(fakeDocument.get(j))) 
+					contains[j] = true;		
+			}
+		}
+		int fakePrincesAmount = 0;
+		for(int k = 0; k < contains.length; k++)
+			if(!contains[k]) fakePrincesAmount++;
+		String[] finalDoc = new String[fakePrincesAmount];
+		for(int m = 0; m < fakePrincesAmount;) {
+			for(int l = 0; l < fakeDocument.size(); l++)
+				if(!contains[l]) {
+					finalDoc[m] = fakeDocument.get(l);
+					m++;
+				}
+		}
+		return finalDoc; 
 	}
 
 	// Getters and Setters	
@@ -103,11 +137,11 @@ public class Kingdom {
 
 	public int getCountriesOwned() {return countriesOwned;}
 	public void setCountriesOwned(int newCountriesOwned) {this.countriesOwned = newCountriesOwned;}
-	
+
 	public int getCapital() {return capital;}
 	public void setCapital(int newCapital) {this.capital = newCapital;}
 
 	public int getArmy() {return army;}
 	public void setArmy(int newArmy) {this.army = newArmy;}
-	
+
 }
